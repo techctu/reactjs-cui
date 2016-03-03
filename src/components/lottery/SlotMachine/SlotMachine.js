@@ -106,8 +106,10 @@ class SlotMachine extends React.Component {
 			delay: this.props.delay,
 			mess: this.props.mess,
 			stop: true,
-			slotNumber: 3
+			slotNumber: props.slotNumber,
+			slotIndexes: new Array(props.slotNumber).fill(0)
 		}
+		console.log(this.state);
 	}
 	requestItems() {
 		this.setState({
@@ -120,13 +122,14 @@ class SlotMachine extends React.Component {
 			}, {
 				name: 'it',
 				imgurl: null
-			}],
-			slotIndexes: new Array(this.state.slotNumber).fill(0)
+			}]
 		});
+		console.log(this.state);
 	}
 	componentWillMount() {
 		//to request and init
 		this.requestItems();
+		console.log(this.state);
 	}
 	spinHandler() {
 
@@ -137,9 +140,7 @@ class SlotMachine extends React.Component {
 	render() {
 		return (
 			<div>
-				<div>{this.state.slotIndexes.map(function(item) {
-				return (<SlotItem item={this.state.items[slotIndexes]}></SlotItem>);
-			})}</div>
+				
 				
 				<button onClick={this.spinHandler.bind(this)}>点击开始</button>
 				<button onClick={this.getAwardHandler.bind(this)}>模拟返回请求</button>
