@@ -98,8 +98,10 @@ SlotItem.propTypes = {
  * A slot machine contains several slots.
  */
 class SlotMachine extends React.Component {
+
 	constructor(props) {
 		super(props);
+		let items = this.requestItems();
 		this.state = {
 			params: props.params === 'undefined' ? null : this.props.params,
 			initUrl: this.props.initUrl,
@@ -107,43 +109,116 @@ class SlotMachine extends React.Component {
 			mess: this.props.mess,
 			stop: true,
 			slotNumber: props.slotNumber,
-			slotIndexes: new Array(props.slotNumber).fill(0)
+			slotIndexes: new Array(props.slotNumber).fill(items[0]),
+			items: items,
+			rule: 'rule ...',
+			showRule: false
 		}
-		console.log(this.state);
 	}
 	requestItems() {
-		this.setState({
-			items: [{
-				name: 'just',
-				imgurl: null
-			}, {
-				name: 'do',
-				imgurl: null
-			}, {
-				name: 'it',
-				imgurl: null
-			}]
-		});
-		console.log(this.state);
-	}
-	componentWillMount() {
-		//to request and init
-		this.requestItems();
-		console.log(this.state);
+		/**
+		 * I used to write
+		 * this.setState({...})
+		 * It doesn't work
+		 * @type {Array}
+		 */
+		return ([{
+			name: 'just',
+			imgurl: null
+		}, {
+			name: 'do',
+			imgurl: null
+		}, {
+			name: 'it',
+			imgurl: null
+		}])
 	}
 	spinHandler() {
+		this.setState({
+			stop: false
+		})
+		this.timer = setInterval(function() {
+			let tempSlots = Array.from(this.state.slotIndexes);
+			tempSlots.forEach((v, i, a) => {
+				tempSlots[i] = this.state.items[this.randNext()]
+			});
+			this.setState({
+				slotIndexes: tempSlots
+			})
 
+		}.bind(this), 50);
+	}
+	randNext() {
+		return Math.floor(Math.random() * this.state.items.length)
+	}
+	generateResult(lottery, index) {
+		if ((typeof lottery) === 'boolean') {
+			if (lottery) {
+				return new Array(this.state.slotNumber).fill(this.state.items[index])
+			} else {
+				let result = new Array(this.state.slotNumber).fill(this.state.items[index]);
+				let diff = false;
+				let last;
+				// result cannot be (N)[size]
+				result.forEach((v, i, a) => {
+					let temp = this.randNext()
+					if (i != 0) {
+						if (last != temp) {
+							diff = true
+						} else {
+							if (i == a.length - 1) {
+								while (!diff) {
+									temp = this.randNext()
+								}
+							}
+						}
+					}
+					last = temp
+					a[i] = this.state.items[temp]
+				})
+				console.log(result)
+				return result
+			}
+		} else {
+			alet('wooooooops')
+		}
 	}
 	getAwardHandler() {
-
+		clearInterval(this.timer);
+		this.setState({
+			slotIndexes: this.generateResult(false, 0)
+		})
+		this.setState({
+			stop: true
+		})
+	}
+	showRule() {
+		this.setState({
+			showRule: true
+		})
+	}
+	hideRule() {
+		this.setState({
+			showRule: false
+		})
 	}
 	render() {
+		let hah = this.state.slotIndexes.map(function(v, i, a) {
+			return (<SlotItem item={this.state.slotIndexes[i]}></SlotItem>);
+		}.bind(this))
 		return (
 			<div>
-				
-				
-				<button onClick={this.spinHandler.bind(this)}>点击开始</button>
-				<button onClick={this.getAwardHandler.bind(this)}>模拟返回请求</button>
+				<div>
+				{this.state.slotIndexes.map(function(v, i, a){
+					return (<SlotItem item={this.state.slotIndexes[i]}></SlotItem>);
+				}.bind(this))}
+				</div>
+				<Modal show={this.state.showRule} onClose={this.hideRule.bind(this)} transitionSpeed={1000}>
+  					<div>{this.state.rule}</div>
+				</Modal>
+				<button onClick={this.showRule.bind(this)} disabled={this.state.showRule}>活动规则</button>
+				<button onClick={this.spinHandler.bind(this)} disabled={!this.state.stop}>点击开始</button>
+				<button onClick={this.getAwardHandler.bind(this)} disabled={this.state.stop}>模拟返回请求</button>
 			</div>
 		);
 	}
@@ -172,43 +247,6 @@ SlotMachine.propTypes = {
 	delay: React.PropTypes.number,
 	mess: React.PropTypes.bool,
 	slotNumber: React.PropTypes.number
-}
-
-class TestComponent extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			end: props.end
-		};
-	}
-	enableHandler() {
-		this.setState({
-			end: true
-		});
-	}
-	spinHandler() {
-		this.setState({
-			end: false
-		});
-	}
-	render() {
-		return (
-			<div>
-            	<button onClick={ this.enableHandler.bind(this) }>点击启用</button>
-            	
-                <StartButton disabled={ !this.state.end } spinHandler={ this.spinHandler.bind(this) } /><label >{this.state.end?'启用':'禁用'}</label>
-                <RuleBox rule='写死的'></RuleBox>
-            </div>
-		);
-	}
-}
-
-TestComponent.displayName = 'TestComponent';
-TestComponent.defaultProps = {
-	end: true
-};
-TestComponent.propTypes = {
-	end: React.PropTypes.bool.isRequired
 }
 
 export default SlotMachine;
