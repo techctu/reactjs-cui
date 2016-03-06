@@ -112,7 +112,9 @@ class SlotMachine extends React.Component {
 			slotIndexes: new Array(props.slotNumber).fill(items[0]),
 			items: items,
 			rule: 'rule ...',
-			showRule: false
+			showRule: false,
+			played: 0,
+			maxPlayTimes: this.props.maxPlayTimes
 		}
 	}
 	requestItems() {
@@ -133,20 +135,24 @@ class SlotMachine extends React.Component {
 			imgurl: null
 		}])
 	}
+
 	spinHandler() {
 		this.setState({
 			stop: false
 		})
 		this.timer = setInterval(function() {
-			let tempSlots = Array.from(this.state.slotIndexes);
-			tempSlots.forEach((v, i, a) => {
-				tempSlots[i] = this.state.items[this.randNext()]
-			});
-			this.setState({
-				slotIndexes: tempSlots
-			})
-
-		}.bind(this), 50);
+			if (!this.state.stop) {
+				let tempSlots = Array.from(this.state.slotIndexes);
+				tempSlots.forEach((v, i, a) => {
+					tempSlots[i] = this.state.items[this.randNext()]
+				});
+				this.setState({
+					slotIndexes: tempSlots
+				})
+			} else {
+				clearInterval(this.timer)
+			}
+		}.bind(this), 100);
 	}
 	randNext() {
 		return Math.floor(Math.random() * this.state.items.length)
@@ -176,7 +182,7 @@ class SlotMachine extends React.Component {
 					last = temp
 					a[i] = this.state.items[temp]
 				})
-				console.log(result)
+
 				return result
 			}
 		} else {
@@ -184,12 +190,11 @@ class SlotMachine extends React.Component {
 		}
 	}
 	getAwardHandler() {
-		clearInterval(this.timer);
-		this.setState({
-			slotIndexes: this.generateResult(false, 0)
-		})
 		this.setState({
 			stop: true
+		})
+		this.setState({
+			slotIndexes: this.generateResult(false, 0)
 		})
 	}
 	showRule() {
@@ -239,14 +244,16 @@ SlotMachine.defaultProps = {
 	initUrl: null,
 	delay: 500,
 	mess: false,
-	slotNumber: 3
+	slotNumber: 3,
+	maxPlayTimes: 1
 }
 SlotMachine.propTypes = {
 	params: React.PropTypes.string,
 	initUrl: React.PropTypes.string,
 	delay: React.PropTypes.number,
 	mess: React.PropTypes.bool,
-	slotNumber: React.PropTypes.number
+	slotNumber: React.PropTypes.number,
+	maxPlayTimes: React.PropTypes.number
 }
 
 export default SlotMachine;
