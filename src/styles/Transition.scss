@@ -1,0 +1,44 @@
+.example-enter {
+  opacity: 0.01;
+  color: blue;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+  color: yellow;
+}
+
+.example-leave {
+  opacity: 1;
+  color: green;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+  color: gray;
+}
+
+.animateExample {
+  display: block;
+  height: 128px;
+  position: relative;
+  width: 384px;
+}
+
+.animateItem {
+  font-size: 36px;
+  font-weight: bold;
+  height: 128px;
+  line-height: 128px;
+  text-align: center;
+  
+  width: 128px;
+  color: red;
+}
+.container {
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+}

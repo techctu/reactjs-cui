@@ -3,6 +3,11 @@ import Modal, {
 	closeStyle
 }
 from 'simple-react-modal'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import styles from '../../../styles/Transition.scss';
+import image1 from '../../../assets/img/angularjs.png'
+import image2 from '../../../assets/img/backbone.png'
+import image3 from '../../../assets/img/reactjs.png'
 
 /**
  * Start button
@@ -12,7 +17,7 @@ class StartButton extends React.Component {
 		let disabled = this.props.disabled ? 'disabled' : '';
 
 		return (
-			<div className="SpinAgain">
+			<div>
                 <button disabled={ disabled } onClick={ this.props.spinHandler }>GO</button>
             </div>
 		);
@@ -70,31 +75,6 @@ RuleBox.defaultProps = {
 }
 
 /**
- * Slot item -array- Slot items - spin
- */
-class SlotItem extends React.Component {
-	render() {
-		return (
-			<div>
-                <img src={ this.props.item.imgurl} alt={this.props.item.name}/>
-            </div>
-		);
-	}
-}
-
-SlotItem.defaultProps = {
-	item: {
-		name: null,
-		imgurl: null
-	}
-};
-
-SlotItem.displayName = 'SlotItem';
-SlotItem.propTypes = {
-	item: React.PropTypes.object.isRequired
-};
-
-/**
  * A slot machine contains several slots.
  */
 class SlotMachine extends React.Component {
@@ -109,7 +89,7 @@ class SlotMachine extends React.Component {
 			mess: this.props.mess,
 			stop: true,
 			slotNumber: props.slotNumber,
-			slotIndexes: new Array(props.slotNumber).fill(items[0]),
+			slotIndexes: new Array(props.slotNumber).fill(0),
 			items: items,
 			rule: 'rule ...',
 			showRule: false,
@@ -126,13 +106,13 @@ class SlotMachine extends React.Component {
 		 */
 		return ([{
 			name: 'just',
-			imgurl: null
+			imgurl: image1
 		}, {
 			name: 'do',
-			imgurl: null
+			imgurl: image2
 		}, {
 			name: 'it',
-			imgurl: null
+			imgurl: image3
 		}])
 	}
 
@@ -142,32 +122,36 @@ class SlotMachine extends React.Component {
 		})
 		this.timer = setInterval(function() {
 			if (!this.state.stop) {
-				let tempSlots = Array.from(this.state.slotIndexes);
-				tempSlots.forEach((v, i, a) => {
-					tempSlots[i] = this.state.items[this.randNext()]
-				});
+				let tempSlots = new Array(this.state.slotNumber).fill(this.state.slotIndexes)
+				for (let i = 0; i < this.state.slotNumber; i++) {
+					tempSlots[i] = this.randNext(tempSlots[i])
+				}
 				this.setState({
 					slotIndexes: tempSlots
 				})
 			} else {
 				clearInterval(this.timer)
 			}
-		}.bind(this), 100);
+		}.bind(this), 250);
 	}
-	randNext() {
-		return Math.floor(Math.random() * this.state.items.length)
+	randNext(i) {
+		let newIndex = Math.floor(Math.random() * this.state.items.length)
+		while (parseInt(i) == parseInt(newIndex)) {
+			newIndex = Math.floor(Math.random() * this.state.items.length)
+		}
+		return newIndex
 	}
 	generateResult(lottery, index) {
 		if ((typeof lottery) === 'boolean') {
 			if (lottery) {
 				return new Array(this.state.slotNumber).fill(this.state.items[index])
 			} else {
-				let result = new Array(this.state.slotNumber).fill(this.state.items[index]);
+				let result = new Array(this.state.slotNumber).fill(0);
 				let diff = false;
 				let last;
 				// result cannot be (N)[size]
 				result.forEach((v, i, a) => {
-					let temp = this.randNext()
+					let temp = Math.floor(Math.random() * this.state.items.length)
 					if (i != 0) {
 						if (last != temp) {
 							diff = true
@@ -180,7 +164,7 @@ class SlotMachine extends React.Component {
 						}
 					}
 					last = temp
-					a[i] = this.state.items[temp]
+					a[i] = temp
 				})
 
 				return result
@@ -208,16 +192,20 @@ class SlotMachine extends React.Component {
 		})
 	}
 	render() {
-		let hah = this.state.slotIndexes.map(function(v, i, a) {
-			return (<SlotItem item={this.state.slotIndexes[i]}></SlotItem>);
-		}.bind(this))
 		return (
-			<div>
-				<div>
-				{this.state.slotIndexes.map(function(v, i, a){
-					return (<SlotItem item={this.state.slotIndexes[i]}></SlotItem>);
-				}.bind(this))}
-				</div>
+			<div >
+			<div className='container'>
+				<ReactCSSTransitionGroup
+	              	className="animateExample"
+	              	transitionEnterTimeout={250}
+	              	transitionLeaveTimeout={250}
+	              	transitionName='example'>
+              		{this.state.slotIndexes.map(function(v, i, a){
+						return (
+							<img className='animateItem' src={ this.state.items[this.state.slotIndexes[i]].imgurl} alt={this.state.items[this.state.slotIndexes[i]].name} key={i}/>
+							/*<SlotItem item={this.state.slotIndexes[i]} key={i}></SlotItem>*/);
+							}.bind(this))}
+            	</ReactCSSTransitionGroup>	</div>	
 				<Modal show={this.state.showRule} onClose={this.hideRule.bind(this)} transitionSpeed={1000}>
   					<div>{this.state.rule}</div>
 				</Modal>
