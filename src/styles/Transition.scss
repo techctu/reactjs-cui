@@ -1,30 +1,80 @@
-.example-enter {
-  opacity: 0.01;
-  color: blue;
+@-webkit-keyframes slideInDown {
+  from {
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, -100%, 0);
+    visibility: visible;
+  }
+  to {
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slideInDown {
+  from {
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, -100%, 0);
+    visibility: visible;
+  }
+  to {
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, 0, 0);
+  }
+}
+.slideInDown {
+  animation-name: slideInDown;
 }
 
-.example-enter.example-enter-active {
+@-webkit-keyframes slideOutDown {
+  from {
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    visibility: hidden;
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, 100%, 0);
+  }
+}
+@keyframes slideOutDown {
+  from {
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    visibility: hidden;
+    //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+    transform: translate3d(0, 100%, 0);
+  }
+}
+.slideOutDown {
+  animation-name: slideOutDown;
+}
+
+.example-enter {
+  margin-top: 0px;
   opacity: 1;
-  transition: opacity 500ms ease-in;
-  color: yellow;
+  &.example-enter-active {
+    @extend .slideInDown;
+    margin-top: 128px;
+    transition: all 500ms ease-in;
+  }
 }
 
 .example-leave {
+  margin-top: 0px;
   opacity: 1;
-  color: green;
-}
-
-.example-leave.example-leave-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
-  color: gray;
+  &.example-leave-active {
+    @extend .slideOutDown;
+    margin-top: -128px;
+    transition: all 300ms ease-in;
+  }
 }
 
 .animateExample {
   display: block;
   height: 128px;
-  position: relative;
-  width: 384px;
+  float:left;
+  overflow: hidden;
 }
 
 .animateItem {
@@ -33,9 +83,11 @@
   height: 128px;
   line-height: 128px;
   text-align: center;
-  
   width: 128px;
-  color: red;
+  img {
+    width: 128px;
+    height: 128px;
+  }
 }
 .container {
   text-align: center;
