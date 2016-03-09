@@ -26,6 +26,11 @@ class Slot extends React.Component {
 		}
 	}
 
+	/**
+	 * change spin state
+	 * @param  {[type]} newProps [description]
+	 * @return {[type]}          [description]
+	 */
 	componentWillReceiveProps(newProps) {
 		if (newProps.stop) {
 			this.setState({
@@ -119,6 +124,10 @@ class SlotMachine extends React.Component {
 		}
 	}
 
+	/**
+	 * Simulate request items to initiate slots
+	 * @return {[type]} [description]
+	 */
 	requestItems() {
 		return ([{
 			name: 'angularjs',
@@ -132,49 +141,67 @@ class SlotMachine extends React.Component {
 		}])
 	}
 
+	/**
+	 * start spin
+	 * @return {[type]} [description]
+	 */
 	spinHandler() {
 		this.setState({
 			machineStop: false
 		})
 	}
 
+	/**
+	 * simulate request result from server
+	 * @param  {[type]} lottery [description]
+	 * @param  {[type]} index   [description]
+	 * @return {[type]}         [description]
+	 */
 	generateResult(lottery, index) {
-		if ((typeof lottery) === 'boolean') {
-			if (lottery) {
-				return new Array(this.state.slotNumber).fill(this.state.items[index])
-			} else {
-				let result = new Array(this.state.slotNumber).fill(0);
-				let diff = false;
-				let last;
-				// result cannot be (N)[size]
-				result.forEach((v, i, a) => {
-					let temp = Math.floor(Math.random() * this.state.items.length)
-					if (i != 0) {
-						if (last != temp) {
-							diff = true
-						} else {
-							if (i == a.length - 1) {
-								while (!diff) {
-									temp = Math.floor(Math.random() * this.state.items.length)
+			if ((typeof lottery) === 'boolean') {
+				if (lottery) {
+					return new Array(this.state.slotNumber).fill(this.state.items[index])
+				} else {
+					let result = new Array(this.state.slotNumber).fill(0);
+					let diff = false;
+					let last;
+					// result cannot be (N)[size]
+					result.forEach((v, i, a) => {
+						let temp = Math.floor(Math.random() * this.state.items.length)
+						if (i != 0) {
+							if (last != temp) {
+								diff = true
+							} else {
+								if (i == a.length - 1) {
+									while (!diff) {
+										temp = Math.floor(Math.random() * this.state.items.length)
+									}
 								}
 							}
 						}
-					}
-					last = temp
-					a[i] = temp
-				})
+						last = temp
+						a[i] = temp
+					})
 
-				return result
+					return result
+				}
+			} else {
+				alet('wooooooops')
 			}
-		} else {
-			alet('wooooooops')
 		}
-	}
+		/**
+		 * react DOM ready
+		 * @return {[type]} [description]
+		 */
 	componentDidMount() {
-		this.setState({
-			ready: true
-		})
-	}
+			this.setState({
+				ready: true
+			})
+		}
+		/**
+		 * simulate function
+		 * @return {[type]} [description]
+		 */
 	getAwardHandler() {
 		this.setState({
 			machineStop: true,
@@ -188,10 +215,16 @@ class SlotMachine extends React.Component {
 		})
 	}
 	hideRule() {
-		this.setState({
-			showRule: false
-		})
-	}
+			this.setState({
+				showRule: false
+			})
+		}
+		/**
+		 * function for slots to tell machine that he stop
+		 * machine show message
+		 * @param  {[type]} i [description]
+		 * @return {[type]}   [description]
+		 */
 	handleSlotStop(i) {
 		if (this.state.ready) {
 			this.setState({
