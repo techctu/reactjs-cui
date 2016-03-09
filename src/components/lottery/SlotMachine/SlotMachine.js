@@ -158,50 +158,52 @@ class SlotMachine extends React.Component {
 	 * @return {[type]}         [description]
 	 */
 	generateResult(lottery, index) {
-			if ((typeof lottery) === 'boolean') {
-				if (lottery) {
-					return new Array(this.state.slotNumber).fill(this.state.items[index])
-				} else {
-					let result = new Array(this.state.slotNumber).fill(0);
-					let diff = false;
-					let last;
-					// result cannot be (N)[size]
-					result.forEach((v, i, a) => {
-						let temp = Math.floor(Math.random() * this.state.items.length)
-						if (i != 0) {
-							if (last != temp) {
-								diff = true
-							} else {
-								if (i == a.length - 1) {
-									while (!diff) {
-										temp = Math.floor(Math.random() * this.state.items.length)
-									}
+		if ((typeof lottery) === 'boolean') {
+			if (lottery) {
+				return new Array(this.state.slotNumber).fill(this.state.items[index])
+			} else {
+				let result = new Array(this.state.slotNumber).fill(0);
+				let diff = false;
+				let last;
+				// result cannot be (N)[size]
+				result.forEach((v, i, a) => {
+					let temp = Math.floor(Math.random() * this.state.items.length)
+					if (i != 0) {
+						if (last != temp) {
+							diff = true
+						} else {
+							if (i == a.length - 1) {
+								while (!diff) {
+									temp = Math.floor(Math.random() * this.state.items.length)
 								}
 							}
 						}
-						last = temp
-						a[i] = temp
-					})
+					}
+					last = temp
+					a[i] = temp
+				})
 
-					return result
-				}
-			} else {
-				alet('wooooooops')
+				return result
 			}
+		} else {
+			alet('wooooooops')
 		}
-		/**
-		 * react DOM ready
-		 * @return {[type]} [description]
-		 */
+	}
+
+	/**
+	 * react DOM ready
+	 * @return {[type]} [description]
+	 */
 	componentDidMount() {
-			this.setState({
-				ready: true
-			})
-		}
-		/**
-		 * simulate function
-		 * @return {[type]} [description]
-		 */
+		this.setState({
+			ready: true
+		})
+	}
+
+	/**
+	 * simulate function
+	 * @return {[type]} [description]
+	 */
 	getAwardHandler() {
 		this.setState({
 			machineStop: true,
@@ -215,16 +217,17 @@ class SlotMachine extends React.Component {
 		})
 	}
 	hideRule() {
-			this.setState({
-				showRule: false
-			})
-		}
-		/**
-		 * function for slots to tell machine that he stop
-		 * machine show message
-		 * @param  {[type]} i [description]
-		 * @return {[type]}   [description]
-		 */
+		this.setState({
+			showRule: false
+		})
+	}
+
+	/**
+	 * function for slots to tell machine that he stop
+	 * machine show message
+	 * @param  {[type]} i [description]
+	 * @return {[type]}   [description]
+	 */
 	handleSlotStop(i) {
 		if (this.state.ready) {
 			this.setState({
