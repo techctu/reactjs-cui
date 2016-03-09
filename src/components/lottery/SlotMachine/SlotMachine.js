@@ -21,24 +21,44 @@ class Slot extends React.Component {
 		super(props)
 		this.state = {
 			items: props.items,
-			current: Math.floor(Math.random() * props.items.length)
+			current: Math.floor(Math.random() * props.items.length),
+			delay: props.delay
 		}
 	}
 
 	componentWillReceiveProps(newProps) {
 		if (newProps.stop) {
-			if (this.timer) {
-				clearInterval(this.timer)
-			}
+			this.setState({
+				stop: newProps.stop,
+				result: newProps.result,
+				tellStop: newProps.tellStop
+			})
 		} else {
-			this.timer = setInterval(this.tick.bind(this), 100)
+			this.setState({
+				stop: newProps.stop,
+				result: null
+			})
+			this.delay = setTimeout(function() {
+				this.timer = setInterval(function() {
+					this.setState({
+						current: this.state.current + 1
+					})
+					if (this.state.current % this.state.items.length == this.state.result) {
+						clearInterval(this.timer)
+						this.state.tellStop()
+					}
+				}.bind(this), 100)
+			}.bind(this), this.state.delay)
 		}
 	}
 
-	tick() {
-		this.setState({
-			current: this.state.current + 1
-		})
+	componentWillUnmount() {
+		if (this.delay) {
+			clearTimeout(this.delay)
+		}
+		if (this.timer) {
+			clearInterval(this.timer)
+		}
 	}
 
 	render() {
@@ -70,7 +90,8 @@ Slot.displayName = 'Slot'
 Slot.propTypes = {
 	items: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
 	stop: React.PropTypes.bool.isRequired,
-	result: React.PropTypes.number
+	result: React.PropTypes.number,
+	delay: React.PropTypes.number
 }
 
 /**
@@ -89,6 +110,7 @@ class SlotMachine extends React.Component {
 			machineStop: props.stop,
 			slotNumber: props.slotNumber,
 			slotIndexes: new Array(props.slotNumber).fill(0),
+			slotStop: 0,
 			items: items,
 			rule: 'rule ...',
 			showRule: false,
@@ -98,20 +120,14 @@ class SlotMachine extends React.Component {
 	}
 
 	requestItems() {
-		/**
-		 * I used to write
-		 * this.setState({...})
-		 * It doesn't work
-		 * @type {Array}
-		 */
 		return ([{
-			name: 'just',
-			imgurl: null
+			name: 'angularjs',
+			imgurl: image1
 		}, {
-			name: 'do',
+			name: 'backbone',
 			imgurl: image2
 		}, {
-			name: 'it',
+			name: 'reactjs',
 			imgurl: image3
 		}])
 	}
@@ -122,43 +138,48 @@ class SlotMachine extends React.Component {
 		})
 	}
 
-	/*  generateResult(lottery, index) {
-			if ((typeof lottery) === 'boolean') {
-				if (lottery) {
-					return new Array(this.state.slotNumber).fill(this.state.items[index])
-				} else {
-					let result = new Array(this.state.slotNumber).fill(0);
-					let diff = false;
-					let last;
-					// result cannot be (N)[size]
-					result.forEach((v, i, a) => {
-						let temp = Math.floor(Math.random() * this.state.items.length)
-						if (i != 0) {
-							if (last != temp) {
-								diff = true
-							} else {
-								if (i == a.length - 1) {
-									while (!diff) {
-										temp = this.randNext()
-									}
+	generateResult(lottery, index) {
+		if ((typeof lottery) === 'boolean') {
+			if (lottery) {
+				return new Array(this.state.slotNumber).fill(this.state.items[index])
+			} else {
+				let result = new Array(this.state.slotNumber).fill(0);
+				let diff = false;
+				let last;
+				// result cannot be (N)[size]
+				result.forEach((v, i, a) => {
+					let temp = Math.floor(Math.random() * this.state.items.length)
+					if (i != 0) {
+						if (last != temp) {
+							diff = true
+						} else {
+							if (i == a.length - 1) {
+								while (!diff) {
+									temp = Math.floor(Math.random() * this.state.items.length)
 								}
 							}
 						}
-						last = temp
-						a[i] = temp
-					})
+					}
+					last = temp
+					a[i] = temp
+				})
 
-					return result
-				}
-			} else {
-				alet('wooooooops')
+				return result
 			}
-		}*/
-
+		} else {
+			alet('wooooooops')
+		}
+	}
+	componentDidMount() {
+		this.setState({
+			ready: true
+		})
+	}
 	getAwardHandler() {
 		this.setState({
 			machineStop: true,
-			/*slotIndexes: this.generateResult(false, 0)*/
+			slotIndexes: this.generateResult(false, 0),
+			result: 0
 		})
 	}
 	showRule() {
@@ -171,14 +192,26 @@ class SlotMachine extends React.Component {
 			showRule: false
 		})
 	}
+	handleSlotStop(i) {
+		if (this.state.ready) {
+			this.setState({
+				slotStop: this.state.slotStop + 1
+			})
+			if (this.state.slotStop % this.state.slotNumber == 0) {
+				this.msgTimer = setTimeout(function() {
+					alert('award is ' + this.state.result);
+				}.bind(this), 1500)
+			}
+		}
+	}
+
 	render() {
-		console.log(this.state.machineStop)
 		return (
 			<div >
 				<div className='container'>		
               		{this.state.slotIndexes.map(
               			function(v, i, a){
-							return (<Slot items={this.state.items} stop={this.state.machineStop} key={i} result={1}/>);
+							return (<Slot items={this.state.items} stop={this.state.machineStop} key={i} result={this.state.slotIndexes[i]} delay={450*i} tellStop={this.handleSlotStop.bind(this,i)}/>);
 						}.bind(this)
 					)}
             	</div>	
