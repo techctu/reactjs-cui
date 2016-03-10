@@ -27,6 +27,10 @@ html {
   border-radius: 10px;
   margin: 0 auto;
   margin-top: 480px;
+  &.open{
+    margin-top: 600px;
+    transition: all 200ms ease-in;
+  }
 }
 .rulebutton{margin-top:100px;}
 .topcontent {
@@ -35,6 +39,12 @@ html {
   background-color: #BD503A;
   border-radius: 10px 10px 50% 50% / 10px 10px 15% 15%;
   box-shadow: 0px 4px 0px -1px rgba(0, 0, 0, 0.2);
+  &.opened{
+    -webkit-transform: rotate3d(1, 0, 0, 180deg);
+    transform: rotate3d(1, 0, 0, 180deg);
+    transform-origin: 0 0 0;
+    transition: all 200ms ease-in;
+  }
 }
 
 .description {
@@ -55,6 +65,10 @@ html {
   display: inline-block;
   margin-top: -200px;
   box-shadow: 0px 4px 0px 0px rgba(0, 0, 0, 0.2);
+  &.opened {
+    display:none;
+    transition: all 200ms ease-in;
+  }
   span {
     margin-top: 35px;
     display: inline-block;
@@ -101,23 +115,23 @@ html {
 
 @-webkit-keyframes swing {
   20% {
-    -webkit-transform: rotate3d(0, 0, 1, 15deg);
-    transform: rotate3d(0, 0, 1, 15deg);
+    -webkit-transform: rotate3d(0, 0, 1, 10deg);
+    transform: rotate3d(0, 0, 1, 10deg);
   }
 
   40% {
-    -webkit-transform: rotate3d(0, 0, 1, -10deg);
-    transform: rotate3d(0, 0, 1, -10deg);
+    -webkit-transform: rotate3d(0, 0, 1, -7deg);
+    transform: rotate3d(0, 0, 1, -7deg);
   }
 
   60% {
-    -webkit-transform: rotate3d(0, 0, 1, 5deg);
-    transform: rotate3d(0, 0, 1, 5deg);
+    -webkit-transform: rotate3d(0, 0, 1, 4deg);
+    transform: rotate3d(0, 0, 1, 4deg);
   }
 
   80% {
-    -webkit-transform: rotate3d(0, 0, 1, -5deg);
-    transform: rotate3d(0, 0, 1, -5deg);
+    -webkit-transform: rotate3d(0, 0, 1, -2deg);
+    transform: rotate3d(0, 0, 1, -2deg);
   }
 
   to {
@@ -129,23 +143,23 @@ html {
 
 @keyframes swing {
   20% {
-    -webkit-transform: rotate3d(0, 0, 1, 15deg);
-    transform: rotate3d(0, 0, 1, 15deg);
+    -webkit-transform: rotate3d(0, 0, 1, 10deg);
+    transform: rotate3d(0, 0, 1, 10deg);
   }
 
   40% {
-    -webkit-transform: rotate3d(0, 0, 1, -10deg);
-    transform: rotate3d(0, 0, 1, -10deg);
+    -webkit-transform: rotate3d(0, 0, 1, -7deg);
+    transform: rotate3d(0, 0, 1, -7deg);
   }
 
   60% {
-    -webkit-transform: rotate3d(0, 0, 1, 5deg);
-    transform: rotate3d(0, 0, 1, 5deg);
+    -webkit-transform: rotate3d(0, 0, 1, 4deg);
+    transform: rotate3d(0, 0, 1, 4deg);
   }
 
   80% {
-    -webkit-transform: rotate3d(0, 0, 1, -5deg);
-    transform: rotate3d(0, 0, 1, -5deg);
+    -webkit-transform: rotate3d(0, 0, 1, -2deg);
+    transform: rotate3d(0, 0, 1, -2deg);
   }
 
   to {
@@ -158,7 +172,7 @@ html {
 .swing {
   -webkit-transform-origin: center;
   transform-origin: center;
-  -webkit-animation: swing .8s infinite normal;
-  -ms-animation: swing .8s infinite normal;
-  animation: swing .8s infinite normal;
+  -webkit-animation: swing .6s infinite alternate;
+  -ms-animation: swing .6s infinite alternate;
+  animation: swing .6s infinite alternate;
 }

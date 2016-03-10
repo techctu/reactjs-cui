@@ -6,7 +6,7 @@ import Modal, {
 }
 from 'simple-react-modal'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import styles from '../../../styles/Transition.scss';
+import styles from '../../../styles/SlotMachine.scss';
 import image1 from '../../../assets/img/angularjs.png'
 import image2 from '../../../assets/img/backbone.png'
 import image3 from '../../../assets/img/reactjs.png'

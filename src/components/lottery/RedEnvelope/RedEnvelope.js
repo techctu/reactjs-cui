@@ -6,6 +6,7 @@ import Modal, {
 }
 from 'simple-react-modal'
 import styles from '../../../styles/RedEnvelope.scss';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class RedEnvelope extends React.Component {
 	constructor(props) {
@@ -16,7 +17,9 @@ class RedEnvelope extends React.Component {
 			showRule: false,
 			openCss: 'chai',
 			requesting: false,
-			envCss: 'hongbao swing'
+			envCss: 'hongbao swing',
+			opened: false,
+			topContentCss: 'topcontent'
 		}
 	}
 
@@ -48,8 +51,11 @@ class RedEnvelope extends React.Component {
 		})
 		setTimeout(function() {
 			this.setState({
-				openCss: 'chai',
-				requesting: false
+				openCss: 'chai opened',
+				requesting: false,
+				envCss: 'hongbao open',
+				opened: true,
+				topContentCss: 'topcontent opened'
 			})
 			setTimeout(function() {
 				alert('show result')
@@ -58,13 +64,17 @@ class RedEnvelope extends React.Component {
 	}
 
 	render() {
+		let top = this.state.opened ? 600 : 480
+		let style = {
+			marginTop: top
+		}
 		return (
 			<div className="container">
 			    <div className={this.state.envCss}>
-			        <div className="topcontent">
-			            <div className="description">恭喜发财 大吉大利</div>
+			        <div className={this.state.topContentCss}>
+			            <div className="description"></div>
 			        </div>
-			        <div className={this.state.openCss} onClick={this.requestResult.bind(this)}>
+			        <div className={this.state.openCss} onClick={this.requestResult.bind(this)} >
 			            <span>拆</span>
 			        </div>
 			    </div>
